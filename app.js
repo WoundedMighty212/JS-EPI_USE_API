@@ -1,13 +1,17 @@
 import {CheckServerAvailabilty} from './apiService.js'
 import {GetApiData} from './apiService.js'
+import {InitDBandCreateTables} from './SQLBuilder.js'
 
 function RunApp(){
     try{
+        InitDBandCreateTables();
+
+        let skipAmount = 0;
         const getEmployeeQuery = 
         `api/employee-sorter/get-employees?limit=500&skip=0`;
 
         const getReporteeQuery = 
-        `api/employee-sorter/get-reporting-relationship?limit=500&skip=0`;
+        `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;
 
         const serverStatus =  CheckServerAvailabilty()
         .then(Status => {
