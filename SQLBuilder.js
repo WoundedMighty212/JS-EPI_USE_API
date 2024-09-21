@@ -29,8 +29,8 @@ function CreateEmployeeTable(){
 function CreateEmployeeRelationshipsTable(){
     db.run(`CREATE TABLE IF NOT EXISTS employeesRelationships (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        ManagerID TEXT,
-        ReporteeID TEXT
+        managerID TEXT,
+        reporteeID TEXT
         employeeID TEXT
     )`, (err) => {
         if (err) {
