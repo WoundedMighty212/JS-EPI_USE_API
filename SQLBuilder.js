@@ -1,6 +1,12 @@
 import sqlite3 from 'sqlite3';
 
-let db;
+const db = new sqlite3.Database('./mydatabase.db', (err) => {
+    if (err) {
+        console.error('Error opening database:', err.message);
+    } else {
+        console.log('Connected to the SQLite database.');
+    }
+});
 
 function deleteAllEmployees() {
     const sql = `DELETE FROM employees`;
@@ -25,18 +31,6 @@ function deleteAllEmployeesRelationships() {
     });
 }
 
-function createSQLliteDB(){
-    const db = new sqlite3.Database('./mydatabase.db', (err) => {
-        if (err) {
-            console.error('Error opening database:', err.message);
-            return false;
-        } else {
-            console.log('Connected to the SQLite database.');
-            return true;
-        }
-    });
-}
-
 function CreateEmployeeTable(){
     db.run(`CREATE TABLE IF NOT EXISTS employees (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,7 +49,7 @@ function CreateEmployeeRelationshipsTable(){
     db.run(`CREATE TABLE IF NOT EXISTS employeesRelationships (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         managerID TEXT,
-        reporteeID TEXT
+        reporteeID TEXT,
         RecordID TEXT
     )`, (err) => {
         if (err) {
@@ -67,12 +61,11 @@ function CreateEmployeeRelationshipsTable(){
 }
 
 export function InitDBandCreateTables(){
-    if(createSQLliteDB()) {
-        CreateEmployeeTable();
-        CreateEmployeeRelationshipsTable();
-        deleteAllEmployees();
-        deleteAllEmployees();
-    }
+    deleteAllEmployees();
+    deleteAllEmployeesRelationships();
+
+    CreateEmployeeTable();
+    CreateEmployeeRelationshipsTable();
 }
 
 export function getDB (){
