@@ -15,6 +15,7 @@ export async function CheckServerAvailabilty() {
         ('Error Reaching Server: Server not found', error);
     }
 }
+
 export async function GetApiData(querryString){
     try{
         const response = await axios.get(`${API_BASE_URL}${querryString}`, 
@@ -23,11 +24,33 @@ export async function GetApiData(querryString){
                 { 
                     'candidate-token': `${assignedToken}`,
                 } 
-            });
-            return response.data; 
+            }
+        );
+        return response.data; 
     }
     catch(error){
         console.error
         ('APi-call Error:', error);
+    }
+}
+
+
+async function PostToServer(querryString, employeeDataArray) {
+    try{
+        const response = await axios.post(`${API_BASE_URL}${querryString}`, 
+            employeeDataArray, 
+            {
+                headers: 
+                { 
+                    'candidate-token': `${assignedToken}`,
+                    'Content-Type': 'application/json' 
+                } 
+            }
+        ) 
+        return response.data;
+    }
+    catch(error){
+        console.error
+        ('APi-Push Error:', error);
     }
 }

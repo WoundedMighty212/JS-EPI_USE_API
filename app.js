@@ -34,8 +34,6 @@ function SaveAllEmployees(skipAmount, total) {
     }
 }
 
-
-
 function CallRelationshipdataAndSave(getReporteeQuery) {
     const ReporteeRelationship = GetApiData(getReporteeQuery)
     .then(ReporteeData => { 
@@ -65,7 +63,6 @@ function SaveAllEmployeesRelationships(skipAmount, total){
         skipAmount = skipAmount + 500;
     }
 }
-
 
 function RunApp(){
     try{
