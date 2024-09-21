@@ -4,15 +4,33 @@ import {InitDBandCreateTables} from './SQLBuilder.js'
 import {insertBulkEmployees} from './SqlLiteService.js'
 import {insertBulkRelationships} from './SqlLiteService.js'
 
-function CallEmployeeandSave() {
+function CallEmployeeandSave(getEmployeeQuery) {
     const employee = GetApiData(getEmployeeQuery)
-    then(employee => {
+    .then(employee => {
         console.log('employee data:', employee);
         insertBulkEmployees(employee);
+        return employee['total'];
     })
 }
 
-function CallRelationshipdataAndSave() {
+function SaveAllEmployees(skipAmount, total) {
+    let skipAmount = 0;
+    let total = 0;
+    const getEmployeeQuery = 
+    `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
+
+    total = CallEmployeeandSave(getEmployeeQuery);
+    skipAmount = skipAmount + 500;
+
+    for(let i = 500; i < total; i++){
+        const getEmployeeQuery = 
+        `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
+        CallEmployeeandSave(getEmployeeQuery);
+        skipAmount = skipAmount + 500;
+    }
+}
+
+function CallRelationshipdataAndSave(getReporteeQuery) {
     const ReporteeRelationship = GetApiData(getReporteeQuery)
     .then(ReporteeData => { 
         console.log('Reportee data:', ReporteeData);
@@ -20,13 +38,32 @@ function CallRelationshipdataAndSave() {
     })
 }
 
+function SaveAllEmployeesRelationships(skipAmount, total){
+    let skipAmount = 0;
+    let total = 0;
+    const getReporteeQuery = 
+        `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;
+
+    total = CallRelationshipdataAndSave(getReporteeQuery);
+    skipAmount = skipAmount + 500;
+
+    for(let i = 500; i < total; i++){
+        const getEmployeeQuery = 
+        `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
+        CallEmployeeandSave(getEmployeeQuery);
+        skipAmount = skipAmount + 500;
+    }
+}
+
+
 function RunApp(){
     try{
         InitDBandCreateTables();
 
         let skipAmount = 0;
+
         const getEmployeeQuery = 
-        `api/employee-sorter/get-employees?limit=500&skip=0`;
+        `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
 
         const getReporteeQuery = 
         `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;
@@ -39,7 +76,7 @@ function RunApp(){
                 CallEmployeeandSave();
 
                 CallRelationshipdataAndSave();
-                
+
             }else{
                 console.log('Server is not running or unavailable')
             }

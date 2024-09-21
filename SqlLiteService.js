@@ -1,6 +1,6 @@
-import sqlite3 from sqlite3
+import sqlite3 from 'sqlite3';
 
-function insertIntoEmployees(name, employeeID){
+export function insertIntoEmployees(name, employeeID){
     const stmt = db.prepare(`INSERT INTO employees (name, employeeID) VALUES (?, ?)`);
     try {
         stmt.run(name, employeeID);
@@ -12,7 +12,7 @@ function insertIntoEmployees(name, employeeID){
     }
 }
 
-function insertIntoRelationships(name, employeeID){
+export function insertIntoRelationships(name, employeeID){
     const stmt = db.prepare(`INSERT INTO employeesRelationships (RecordID, managerID, reporteeID) VALUES (?, ?, ?)`);
     try {
         stmt.run(RecordID, managerID, reporteeID);
@@ -24,7 +24,7 @@ function insertIntoRelationships(name, employeeID){
     }
 }
 
-function insertBulkEmployees(employees) {
+export function insertBulkEmployees(employees) {
     const stmt = db.prepare(`INSERT INTO employees (name, employeeID) VALUES (?, ?)`);
 
     db.serialize(() => {
@@ -41,7 +41,7 @@ function insertBulkEmployees(employees) {
     });
 }
 
-function insertBulkRelationships(employeesRelationships) {
+export function insertBulkRelationships(employeesRelationships) {
     const stmt = db.prepare(`INSERT INTO employeesRelationships (RecordID, managerID, reporteeID) VALUES (?, ?, ?)`);
 
     db.serialize(() => {
