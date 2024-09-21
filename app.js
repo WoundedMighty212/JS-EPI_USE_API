@@ -6,10 +6,16 @@ import {insertBulkRelationships} from './SqlLiteService.js'
 
 function CallEmployeeandSave(getEmployeeQuery) {
     const employee = GetApiData(getEmployeeQuery)
-    .then(employee => {
-        console.log('employee data:', employee);
-        insertBulkEmployees(employee);
-        return employee['total'];
+    .then(response => {
+
+        const employeeArray = response.data.map(item => ({
+            name: item.name,         
+            employeeID: item.id, 
+        }));
+
+        console.log('employee data:', employeeArray);
+        insertBulkEmployees(employeeArray);
+        return response['total'];
     })
 }
 
@@ -28,11 +34,20 @@ function SaveAllEmployees(skipAmount, total) {
     }
 }
 
+
+
 function CallRelationshipdataAndSave(getReporteeQuery) {
     const ReporteeRelationship = GetApiData(getReporteeQuery)
     .then(ReporteeData => { 
-        console.log('Reportee data:', ReporteeData);
-        insertBulkRelationships(ReporteeData);
+
+        const relationshipsArray = ReporteeData.data.map(item => ({
+            RecordID: item.id,         
+            managerID: item.managerId, 
+            reporteeID: item.reporteeId 
+        }));
+
+        console.log('Reportee data:', relationshipsArray);
+        insertBulkRelationships(relationshipsArray);
     })
 }
 
