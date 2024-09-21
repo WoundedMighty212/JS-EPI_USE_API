@@ -49,7 +49,7 @@ export function insertBulkRelationships(employeesRelationships) {
 
     db.serialize(() => {
         try {
-            employees.forEach(({ RecordID, managerID, reporteeID }) => {
+            employeesRelationships.forEach(({ RecordID, managerID, reporteeID }) => {
                 stmt.run(RecordID, managerID, reporteeID);
                 console.log(`Inserted Relationships: ${RecordID} with ID: ${managerID} with sub-boardants: ${reporteeID}`);
             });
