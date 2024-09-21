@@ -31,7 +31,7 @@ function CreateEmployeeRelationshipsTable(){
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         managerID TEXT,
         reporteeID TEXT
-        employeeID TEXT
+        RecordID TEXT
     )`, (err) => {
         if (err) {
             console.error('Error creating table:', err.message);
