@@ -69,9 +69,9 @@ function RunApp(){
             if(Status['message'] === 'Service is running'){
                 console.log('Server is online')
 
-                CallEmployeeandSave();
+                SaveAllEmployees(0,0);
 
-                CallRelationshipdataAndSave();
+                SaveAllEmployeesRelationships(0,0);
 
             }else{
                 console.log('Server is not running or unavailable')
