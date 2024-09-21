@@ -1,5 +1,7 @@
 import sqlite3 from 'sqlite3';
 
+let db;
+
 export function insertIntoEmployees(name, employeeID){
     const stmt = db.prepare(`INSERT INTO employees (name, employeeID) VALUES (?, ?)`);
     try {

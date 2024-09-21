@@ -14,8 +14,6 @@ function CallEmployeeandSave(getEmployeeQuery) {
 }
 
 function SaveAllEmployees(skipAmount, total) {
-    let skipAmount = 0;
-    let total = 0;
     const getEmployeeQuery = 
     `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
 
@@ -39,8 +37,6 @@ function CallRelationshipdataAndSave(getReporteeQuery) {
 }
 
 function SaveAllEmployeesRelationships(skipAmount, total){
-    let skipAmount = 0;
-    let total = 0;
     const getReporteeQuery = 
         `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;
 

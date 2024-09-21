@@ -1,5 +1,30 @@
 import sqlite3 from 'sqlite3';
 
+let db;
+
+function deleteAllEmployees() {
+    const sql = `DELETE FROM employees`;
+    db.run(sql, function(err) {
+        if (err) {
+            console.error('Error deleting employees:', err.message);
+        } else {
+            console.log(`Deleted ${this.changes} row(s) from employees table.`);
+        }
+    });
+}
+
+function deleteAllEmployeesRelationships() {
+    const sql = `DELETE FROM employeesRelationships`;
+
+    db.run(sql, function(err) {
+        if (err) {
+            console.error('Error deleting employeesRelationships:', err.message);
+        } else {
+            console.log(`Deleted ${this.changes} row(s) from employeesRelationships table.`);
+        }
+    });
+}
+
 function createSQLliteDB(){
     const db = new sqlite3.Database('./mydatabase.db', (err) => {
         if (err) {
@@ -45,6 +70,8 @@ export function InitDBandCreateTables(){
     if(createSQLliteDB()) {
         CreateEmployeeTable();
         CreateEmployeeRelationshipsTable();
+        deleteAllEmployees();
+        deleteAllEmployees();
     }
 }
 
