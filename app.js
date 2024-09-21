@@ -44,8 +44,8 @@ function SaveAllEmployeesRelationships(skipAmount, total){
     skipAmount = skipAmount + 500;
 
     for(let i = 500; i < total; i++){
-        const getEmployeeQuery = 
-        `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
+        const getReporteeQuery = 
+        `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;
         CallEmployeeandSave(getEmployeeQuery);
         skipAmount = skipAmount + 500;
     }
