@@ -1,6 +1,7 @@
 import sqlite3 from 'sqlite3';
+import {getDB} from './SQLBuilder.js'
 
-let db;
+const db = getDB();
 
 export function insertIntoEmployees(name, employeeID){
     const stmt = db.prepare(`INSERT INTO employees (name, employeeID) VALUES (?, ?)`);

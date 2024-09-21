@@ -75,3 +75,6 @@ export function InitDBandCreateTables(){
     }
 }
 
+export function getDB (){
+    return db;
+}
