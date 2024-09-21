@@ -1,6 +1,24 @@
 import {CheckServerAvailabilty} from './apiService.js'
 import {GetApiData} from './apiService.js'
 import {InitDBandCreateTables} from './SQLBuilder.js'
+import {insertBulkEmployees} from './SqlLiteService.js'
+import {insertBulkRelationships} from './SqlLiteService.js'
+
+function CallEmployeeandSave() {
+    const employee = GetApiData(getEmployeeQuery)
+    then(employee => {
+        console.log('employee data:', employee);
+        insertBulkEmployees(employee);
+    })
+}
+
+function CallRelationshipdataAndSave() {
+    const ReporteeRelationship = GetApiData(getReporteeQuery)
+    .then(ReporteeData => { 
+        console.log('Reportee data:', ReporteeData);
+        insertBulkRelationships(ReporteeData);
+    })
+}
 
 function RunApp(){
     try{
@@ -18,13 +36,10 @@ function RunApp(){
             if(Status['message'] === 'Service is running'){
                 console.log('Server is online')
 
-                const employee = GetApiData(getEmployeeQuery)
-                .then(employee => console.log('employee data:', employee));
+                CallEmployeeandSave();
 
-                const ReporteeRelationship =
-                GetApiData(getReporteeQuery)
-                .then(Reportee => console.log('Reportee data:', Reportee));
-
+                CallRelationshipdataAndSave();
+                
             }else{
                 console.log('Server is not running or unavailable')
             }
