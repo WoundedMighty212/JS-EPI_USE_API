@@ -13,7 +13,6 @@ export async function CheckServerAvailabilty() {
     catch(error){
         console.error
         ('Error Reaching Server: Server not found', error);
-       // throw error;
     }
 }
 export async function GetApiData(querryString){
@@ -29,6 +28,6 @@ export async function GetApiData(querryString){
     }
     catch(error){
         console.error
-        ('Error Reaching Server: Server not found', error);
+        ('APi-call Error:', error);
     }
 }

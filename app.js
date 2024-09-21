@@ -7,6 +7,7 @@ function RunApp(){
         `api/employee-sorter/get-employees?limit=500&skip=0`;
         const getReporteeQuery = 
         `api/employee-sorter/get-reporting-relationship?limit=500&skip=0`;
+        
         const serverStatus =  CheckServerAvailabilty()
         .then(Status => console.log('Server Status:', Status));
 
