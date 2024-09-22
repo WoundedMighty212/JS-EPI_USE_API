@@ -1,4 +1,4 @@
-import sqlite3 from 'sqlite3';
+import sqlite3 from 'sqlite3';//sql lite 3rd party tools
 
 //create or connect to sql db
 const db = new sqlite3.Database('./mydatabase.db', (err) => {
@@ -36,6 +36,7 @@ function deleteAllEmployeesRelationships() {
 
 //create table for employees objects
 function CreateEmployeeTable(){
+    //table object sql command
     db.run(`CREATE TABLE IF NOT EXISTS employees (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
@@ -52,9 +53,10 @@ function CreateEmployeeTable(){
 
 //create table for employees relationships objects
 function CreateEmployeeRelationshipsTable(){
+    //table object sql command
     db.run(`CREATE TABLE IF NOT EXISTS employeesRelationships (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        managerID TEXT,
+        managerID TEXT, 
         reporteeID TEXT,
         RecordID TEXT
     )`, (err) => {

@@ -1,5 +1,5 @@
-import sqlite3 from 'sqlite3';
-import {getDB} from './SQLBuilder.js'
+import sqlite3 from 'sqlite3'; //sql lite 3rd party tools
+import {getDB} from './SQLBuilder.js' //this constructs sql db
 
 //get the connected db
 const db = getDB();
@@ -64,31 +64,50 @@ export function insertBulkRelationships(employeesRelationships) {
         }
     });
 }
-
+// Function to retrieve all employee data from the database.
+// This function is asynchronous and returns a Promise that resolves with the employee data or rejects with an error.
+// The function utilizes SQLite's `db.all` method to execute the SQL query.
+// Parameters: None
+// Returns: Promise that resolves to an array of employee objects or rejects with an error.
 //get all employee data asnync function
 export function SelectAllEMployees(){
     return new Promise((resolve, reject) => {
+         // Execute SQL query to select all employees from the 'employees' table
         db.all(`SELECT * FROM employees`, [], (err, rows) => {
+            // Log the error message if there is an issue with the query
             if (err) {
                 console.error('Error querying data:', err.message);
+                 // Reject the Promise with the error
                 reject(err);
             } else {
+                // Log the retrieved employee data for debugging purposes
                 console.log('Employees:', rows);
+                // Resolve the Promise with the array of employee data
                 resolve(rows);
             }
         });
     });
 }
 
+// Function to retrieve all employee data from the database.
+// This function is asynchronous and returns a Promise that resolves with the employee data or rejects with an error.
+// The function utilizes SQLite's `db.all` method to execute the SQL query.
+// Parameters: None
+// Returns: Promise that resolves to an array of employee objects or rejects with an error.
 //get all employees Relationships data asnync function
 export function SelectAllRelationships(){
+     // Execute SQL query to select all employees Relationships from the 'employees' table
     return new Promise((resolve, reject) => {
         db.all(`SELECT * FROM employeesRelationships`, [], (err, rows) => {
+            // Log the error message if there is an issue with the query
             if (err) {
                 console.error('Error querying data:', err.message);
+                 // Reject the Promise with the error
                 reject(err);
             } else {
+                // Log the retrieved employee data for debugging purposes
                 console.log('Employees:', rows);
+                // Resolve the Promise with the array of employeesRelationships data
                 resolve(rows); 
             }
         });
