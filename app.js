@@ -7,11 +7,15 @@ import {SelectAllEMployees} from './SqlLiteService.js'
 import {SelectAllRelationships} from './SqlLiteService.js'
 
 function FilterList(RelationshipArray, employeeArray, employee) {
-    let mainFilteredArray = [];
+    let MainFilteredArray = [];
     let FilteredObject;
     FilteredObject = RelationshipArray // find the first employee relationship
         .find(items => employee.employeeID === items.managerId 
             || employee.employeeID ===  items.reporteeId);
+
+        if (!FilteredObject) {  // Added a check for undefined.
+            throw new Error("could not find match");
+        }
 
         //determine if first employee is manager or reportee
         if(employee.employeeID === FilteredObject.managerId) { 
@@ -63,18 +67,20 @@ function SortList () {
           const employeeExist = MainFilteredArray.find(items => 
                 employee.employeeID === item.managerId
             || employee.employeeID === item.reporteeId)
-            if(employeeExist > 0){
+            if(employeeExist){
                 //do not add to list go to next employee
                 continue;  // Skip this iteration
             }
             else{
                 //find new manager and reportee and add to list
-               MainFilteredArray = FilterList(RelationshipArray, employeeArray, employee);
+                const filteredList = FilterList(RelationshipArray, employeeArray, employee);
+                MainFilteredArray = MainFilteredArray.concat(filteredList); // add all employees to list with append
             }
         }
         else{
             //find new manager and reportee and add to list
-            MainFilteredArray = FilterList(RelationshipArray, employeeArray, employee);
+            const filteredList = FilterList(RelationshipArray, employeeArray, employee);
+            MainFilteredArray = MainFilteredArray.concat(filteredList); // add all employees to list with append
         }
    }
    //post to server: 
