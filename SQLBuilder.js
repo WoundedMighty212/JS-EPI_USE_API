@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3';
 
+//create or connect to sql db
 const db = new sqlite3.Database('./mydatabase.db', (err) => {
     if (err) {
         console.error('Error opening database:', err.message);
@@ -8,6 +9,7 @@ const db = new sqlite3.Database('./mydatabase.db', (err) => {
     }
 });
 
+//delete all data for employees. for this test example it should run everything as a new app install
 function deleteAllEmployees() {
     const sql = `DELETE FROM employees`;
     db.run(sql, function(err) {
@@ -19,6 +21,7 @@ function deleteAllEmployees() {
     });
 }
 
+//delete all data for employeesRelationships. for this test example it should run everything as a new app install
 function deleteAllEmployeesRelationships() {
     const sql = `DELETE FROM employeesRelationships`;
 
@@ -31,6 +34,7 @@ function deleteAllEmployeesRelationships() {
     });
 }
 
+//create table for employees objects
 function CreateEmployeeTable(){
     db.run(`CREATE TABLE IF NOT EXISTS employees (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,6 +49,8 @@ function CreateEmployeeTable(){
     });
 }
 
+
+//create table for employees relationships objects
 function CreateEmployeeRelationshipsTable(){
     db.run(`CREATE TABLE IF NOT EXISTS employeesRelationships (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,14 +66,17 @@ function CreateEmployeeRelationshipsTable(){
     });
 }
 
+// reset data to new app instance and create tables is neccesary
 export function InitDBandCreateTables(){
+    //reset table information
     deleteAllEmployees();
     deleteAllEmployeesRelationships();
-
+    //if tables do not exist create tables
     CreateEmployeeTable();
     CreateEmployeeRelationshipsTable();
 }
 
+//expose the DB for the SqlLiteService.js class
 export function getDB (){
     return db;
 }
