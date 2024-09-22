@@ -49,7 +49,7 @@ async function PostToServer(querryString, employeeDataArray) {
         ) 
         return response.data;
     }
-    catch(error){
+    catch(error) {
         console.error
         ('APi-Push Error:', error);
     }

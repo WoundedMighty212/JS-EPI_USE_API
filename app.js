@@ -6,60 +6,79 @@ import {insertBulkRelationships} from './SqlLiteService.js'
 import {SelectAllEMployees} from './SqlLiteService.js'
 import {SelectAllRelationships} from './SqlLiteService.js'
 
+function FilterList(RelationshipArray, employeeArray, employee) {
+    let mainFilteredArray = [];
+    let FilteredObject;
+    FilteredObject = RelationshipArray // find the first employee relationship
+        .find(items => employee.employeeID === items.managerId 
+            || employee.employeeID ===  items.reporteeId);
+
+        //determine if first employee is manager or reportee
+        if(employee.employeeID === FilteredObject.managerId) { 
+        
+            MainFilteredArray = 
+            GetReportees(RelationshipArray, employee, employeeArray);
+
+        }
+        else if(employee.employeeID === FilteredObject.reporteeId) { //is first employee reportee
+        let managerObject = RelationshipArray // find the first employee manager
+            .find(items => 
+                FilteredObject.managerId === items.managerId);
+        
+        MainFilteredArray =
+            GetReportees(RelationshipArray, managerObject, employeeArray);
+            
+        }
+        else { // there is no relationship
+            throw new Error("employee has no relationship!")
+        }
+
+    return MainFilteredArray;
+}
 
 function GetReportees(RelationshipArray, employee, employeeArray){
     let reportee;
     let mainFilteredArray = [];
-    mainFilteredArray[0] = employee;
+    mainFilteredArray[0] = employee; //add manager first
     let filteredArray = RelationshipArray.filter(items => 
-        employee.id === items.managerId); //find his reportees relationship id
+        employee.employeeID === items.managerId); //find his reportees relationship id
     
     for(let i = 0; i < filteredArray.length; i++){ //find all reportees
         reportee = employeeArray.find(items => 
-            filteredArray[i].reporteeId === items.id);//so find reportee
-        mainFilteredArray[i + 1] = reportee; //add to list after manager
+            filteredArray[i].reporteeId === items.employeeID);//so find reportee
+        mainFilteredArray[i + 1] = reportee; //add reportee to list after manager
     }
-    
-    return mainFilteredArray;
+
+    return mainFilteredArray; //return list of managers
 }
 
-function test () {
+function SortList () {
    const employeeArray = SelectAllEMployees();
    const RelationshipArray = SelectAllRelationships();
-   let FilteredObject;
    let MainFilteredArray = [];
-   let filteredArray = [];
-   let reportee;
-   
-    let k = 0;
-    let employee = employeeArray[k];//set to first employee
-    FilteredObject = RelationshipArray // find the first employee relationship
-    .find(items => employee.id === items.managerId 
-        || employee.id ===  items.reporteeId);
 
-    //determine if first employee is manager or reportee
-    if(employee.id === FilteredObject.managerId) { 
-    
-        MainFilteredArray = 
-        GetReportees(RelationshipArray, employee, employeeArray);
-
-    }
-    else if(employee.id === FilteredObject.reporteeId) { 
-       let managerObject = RelationshipArray // find the first employee manager
-        .find(items => 
-            FilteredObject.managerId === items.managerId);
-       
-       MainFilteredArray =
-        GetReportees(RelationshipArray, managerObject, employeeArray);
-        
-    }
-    else {
-        throw new Error("employee has no relationship!")
-    }
-
-   /* for(let i = 0; i < RelationshipArray.length; i++){
-            
-    }*/
+   for(let i = 0; i < employeeArray.length; i++){
+    let employee = employeeArray[i];//set to first employee
+        if(MainFilteredArray.length > 0){
+          const employeeExist = MainFilteredArray.find(items => 
+                employee.employeeID === item.managerId
+            || employee.employeeID === item.reporteeId)
+            if(employeeExist > 0){
+                //do not add to list go to next employee
+                continue;  // Skip this iteration
+            }
+            else{
+                //find new manager and reportee and add to list
+               MainFilteredArray = FilterList(RelationshipArray, employeeArray, employee);
+            }
+        }
+        else{
+            //find new manager and reportee and add to list
+            MainFilteredArray = FilterList(RelationshipArray, employeeArray, employee);
+        }
+   }
+   //post to server: 
+   PostToServer('api/employee-sorter/test', MainFilteredArray);
 }
 
 function CallEmployeeandSave(getEmployeeQuery) {
