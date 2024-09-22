@@ -3,6 +3,64 @@ import {GetApiData} from './apiService.js'
 import {InitDBandCreateTables} from './SQLBuilder.js'
 import {insertBulkEmployees} from './SqlLiteService.js'
 import {insertBulkRelationships} from './SqlLiteService.js'
+import {SelectAllEMployees} from './SqlLiteService.js'
+import {SelectAllRelationships} from './SqlLiteService.js'
+
+
+function GetReportees(RelationshipArray, employee, employeeArray){
+    let reportee;
+    let mainFilteredArray = [];
+    mainFilteredArray[0] = employee;
+    let filteredArray = RelationshipArray.filter(items => 
+        employee.id === items.managerId); //find his reportees relationship id
+    
+    for(let i = 0; i < filteredArray.length; i++){ //find all reportees
+        reportee = employeeArray.find(items => 
+            filteredArray[i].reporteeId === items.id);//so find reportee
+        mainFilteredArray[i + 1] = reportee; //add to list after manager
+    }
+    
+    return mainFilteredArray;
+}
+
+function test () {
+   const employeeArray = SelectAllEMployees();
+   const RelationshipArray = SelectAllRelationships();
+   let FilteredObject;
+   let MainFilteredArray = [];
+   let filteredArray = [];
+   let reportee;
+   
+    let k = 0;
+    let employee = employeeArray[k];//set to first employee
+    FilteredObject = RelationshipArray // find the first employee relationship
+    .find(items => employee.id === items.managerId 
+        || employee.id ===  items.reporteeId);
+
+    //determine if first employee is manager or reportee
+    if(employee.id === FilteredObject.managerId) { 
+    
+        MainFilteredArray = 
+        GetReportees(RelationshipArray, employee, employeeArray);
+
+    }
+    else if(employee.id === FilteredObject.reporteeId) { 
+       let managerObject = RelationshipArray // find the first employee manager
+        .find(items => 
+            FilteredObject.managerId === items.managerId);
+       
+       MainFilteredArray =
+        GetReportees(RelationshipArray, managerObject, employeeArray);
+        
+    }
+    else {
+        throw new Error("employee has no relationship!")
+    }
+
+   /* for(let i = 0; i < RelationshipArray.length; i++){
+            
+    }*/
+}
 
 function CallEmployeeandSave(getEmployeeQuery) {
     const employee = GetApiData(getEmployeeQuery)
@@ -67,14 +125,6 @@ function SaveAllEmployeesRelationships(skipAmount, total){
 function RunApp(){
     try{
         InitDBandCreateTables();
-
-        let skipAmount = 0;
-
-        const getEmployeeQuery = 
-        `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
-
-        const getReporteeQuery = 
-        `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;
 
         const serverStatus =  CheckServerAvailabilty()
         .then(Status => {
