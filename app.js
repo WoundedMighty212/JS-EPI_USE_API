@@ -42,15 +42,15 @@ function FilterList(RelationshipArray, employeeArray, employee) {
 
 function GetReportees(RelationshipArray, employee, employeeArray){
     let reportee;
-    let mainFilteredArray = [];
-    mainFilteredArray[0] = employee; //add manager first
+    let mainFilteredArray = []; 
+    mainFilteredArray.push(employee); //add manager first
     let filteredArray = RelationshipArray.filter(items => 
         employee.employeeID === items.managerId); //find his reportees relationship id
     
     for(let i = 0; i < filteredArray.length; i++){ //find all reportees
         reportee = employeeArray.find(items => 
             filteredArray[i].reporteeId === items.employeeID);//so find reportee
-        mainFilteredArray[i + 1] = reportee; //add reportee to list after manager
+            mainFilteredArray.push(reportee); //add reportee to list after manager
     }
 
     return mainFilteredArray; //return list of managers
@@ -64,7 +64,7 @@ function SortList () {
    for(let i = 0; i < employeeArray.length; i++){
     let employee = employeeArray[i];//set to first employee
         if(MainFilteredArray.length > 0){
-          const employeeExist = MainFilteredArray.find(items => 
+          const employeeExist = MainFilteredArray.find(item => 
                 employee.employeeID === item.managerId
             || employee.employeeID === item.reporteeId)
             if(employeeExist){
