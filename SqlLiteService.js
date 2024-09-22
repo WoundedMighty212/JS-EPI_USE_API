@@ -34,7 +34,7 @@ export function insertBulkEmployees(employees) {
         try {
             employees.forEach(({ name, employeeID }) => {
                 stmt.run(name, employeeID);
-                //console.log(`Inserted employee: ${name} with ID: ${employeeID}`);
+                console.log(`Inserted employee: ${name} with ID: ${employeeID}`);
             });
         } catch (error) {
             console.error('Error inserting into employees:', error);
@@ -51,7 +51,7 @@ export function insertBulkRelationships(employeesRelationships) {
         try {
             employeesRelationships.forEach(({ RecordID, managerID, reporteeID }) => {
                 stmt.run(RecordID, managerID, reporteeID);
-               // console.log(`Inserted Relationships: ${RecordID} with ID: ${managerID} with sub-boardants: ${reporteeID}`);
+                console.log(`Inserted Relationships: ${RecordID} with ID: ${managerID} with sub-boardants: ${reporteeID}`);
             });
         } catch (error) {
             console.error('Error inserting into employeesRelationships:', error);

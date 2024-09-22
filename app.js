@@ -96,7 +96,7 @@ function CallEmployeeandSave(getEmployeeQuery) {
             employeeID: item.id, 
         }));
 
-        //console.log('employee data:', employeeArray);
+        console.log('employee data:', employeeArray);
         insertBulkEmployees(employeeArray);
         return response['total'];
     })
@@ -127,7 +127,7 @@ function CallRelationshipdataAndSave(getReporteeQuery) {
             reporteeID: item.reporteeId 
         }));
 
-        //console.log('Reportee data:', relationshipsArray);
+        console.log('Reportee data:', relationshipsArray);
         insertBulkRelationships(relationshipsArray);
     })
 }
