@@ -1,0 +1,112 @@
+body {
+    /*keep container for all components neat and centered*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(to right, #3ebada, #2777d3, #4726a3); /*nice rainbow effect
+    for main background*/
+    font-family: Arial, sans-serif; 
+    margin: 0; 
+    padding: 20px;
+}
+/*Main Heading style --don't mess with this!*/
+.ColorText {
+    font-family: 'Protest Guerrilla', sans-serif; /*unique robot style for text*/
+    font-size: 3rem; /*perfect size for main Heading*/
+    background: linear-gradient(to right, #3ebada, #2777d3, #4726a3); 
+    /*want to match the style of color for the body to match this heading color style*/
+    -webkit-background-clip: text; /*keep this otherwise we lose the text 
+    and only see color -- never Remove! -- Don't even look at it!*/
+    color: transparent; /*hide Black color of the Text basically
+    --Don't Remove -- Don't even look at it!*/
+    position: relative; 
+    z-index: 1;
+}
+/*Holds all the Components in one basket 
+and their position in a neat fashion*/
+.container {
+    display: flex; /*keeps childs neat and centered*/
+    flex-direction: column;/*keeps childs neat and centered*/
+    background: linear-gradient(to bottom, #000000, #aca3a3);/*for a more metalic look*/
+    border-style: outset; /*for a more pop out style look*/
+    border-color: whitesmoke;
+    border-radius: 12px;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px; 
+    width: 80%; 
+}
+/*main Table Style*/
+table {
+    border-style: solid;
+    border-radius: 1rem; /*give a circle look for border 
+    for whole table*/
+    width: 100%; 
+    margin-top: 20px; 
+    background-color: silver;
+}
+/*table heading cells Style*/
+th{
+    border-style: solid;
+    border-radius: 1rem;/*give a circle look for the border
+    for each heading*/
+    padding: 12px; 
+    text-align: left; 
+    border-color: gray;
+    background-color: #4a338b; /*Colors for Table Headings*/
+}
+/*table data cells Style*/
+td {
+    border-style: solid;
+    border-color: gray;
+    border-radius: 1rem; /*give a circle look for the border 
+    for each record*/
+    padding: 12px; 
+    text-align: left; 
+}
+
+/* Pagination position styling */
+.paginationContainer {
+    padding: 8px;
+    justify-content: center; 
+    margin-top: 20px; 
+    position: relative; 
+}
+
+/* Pagination styling */
+.paginationContainer a {
+    color: indigo; 
+    padding: 10px 18px; 
+    text-decoration: none; 
+}
+
+/* Pagination hover effect on non-active 
+this is for the user to see which pageination button is selected 
+by user*/
+.paginationContainer a:hover:not(.active) {
+    background-color: #b31010;
+    color: white; 
+}
+
+/* Pagination hover effect on active-- 
+this is for the user to see which page is actively selected*/
+.paginationContainer a:nth-child(5) {
+    background-color: blue; 
+    color: white; 
+}
+
+/* Bold styles for specific pagination links 
+for next and previous*/
+.paginationContainer a:nth-child(1),
+.paginationContainer a:nth-child(7) {
+    font-weight: bold; 
+}
+
+/* Content styling */
+.content {
+    margin: 50px; 
+    padding: 15px; 
+    width: 700px; 
+    height: 200px; 
+    border: 2px solid black; 
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Protest+Guerrilla&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+    <div class="container">
+        <h1 class="MainHeading">
+            <span class="ColorText">This is our Display Table</span>
+        </h1>
+        <div class="tableContent">
+            <table>
+                <tr>
+                    <th>Test heading 1</th>
+                    <th>Test heading 2</th>
+                </tr>
+                <tr>
+                   <td>Test data 1</td> 
+                   <td>Test data 2</td> 
+                </tr>
+            </table>
+        </div>
+        <div class="paginationContainer" role="navigation" aria-label="Pagination">
+            <a href="#" aria-label="Previous Page">&lt;&lt; Previous</a>
+            <a href="#" title="Page 1">1</a>
+            <a href="#" title="Page 2">2</a>
+            <a href="#" title="Page 3">3</a>
+            <a href="#" title="Page 4" class="active" aria-current="page">4</a>
+            <a href="#" title="Page 5">5</a>
+            <a href="#" aria-label="Next Page">Next &gt;&gt;</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!--<script src="app.js" type="module"> </script>-->
+    </body>
+</html>
