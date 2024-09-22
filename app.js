@@ -84,7 +84,7 @@ function SortList () {
         }
    }
    //post to server: 
-   PostToServer('api/employee-sorter/test', MainFilteredArray);
+   console.log(PostToServer('api/employee-sorter/test', MainFilteredArray));
 }
 
 function CallEmployeeandSave(getEmployeeQuery) {
@@ -96,7 +96,7 @@ function CallEmployeeandSave(getEmployeeQuery) {
             employeeID: item.id, 
         }));
 
-        console.log('employee data:', employeeArray);
+        //console.log('employee data:', employeeArray);
         insertBulkEmployees(employeeArray);
         return response['total'];
     })
@@ -127,7 +127,7 @@ function CallRelationshipdataAndSave(getReporteeQuery) {
             reporteeID: item.reporteeId 
         }));
 
-        console.log('Reportee data:', relationshipsArray);
+        //console.log('Reportee data:', relationshipsArray);
         insertBulkRelationships(relationshipsArray);
     })
 }
@@ -159,6 +159,8 @@ function RunApp(){
                 SaveAllEmployees(0,0);
 
                 SaveAllEmployeesRelationships(0,0);
+
+                SortList();
 
             }else{
                 console.log('Server is not running or unavailable')
