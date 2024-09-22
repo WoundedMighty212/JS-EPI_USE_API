@@ -88,8 +88,9 @@ async function SortList () {
    console.log(await PostToServer('api/employee-sorter/test', MainFilteredArray));
 }
 
-function CallEmployeeandSave(getEmployeeQuery) {
-    const employee = GetApiData(getEmployeeQuery)
+async function CallEmployeeandSave(getEmployeeQuery) {
+    let total;
+    const employee = await GetApiData(getEmployeeQuery)
     .then(response => {
 
         const employeeArray = response.data.map(item => ({
@@ -99,27 +100,33 @@ function CallEmployeeandSave(getEmployeeQuery) {
 
         console.log('employee data:', employeeArray);
         insertBulkEmployees(employeeArray);
-        return response['total'];
+        total = response['totalCount'];
     })
+    return total;
 }
 
-function SaveAllEmployees(skipAmount, total) {
+async function SaveAllEmployees(skipAmount, total) {
     const getEmployeeQuery = 
     `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
 
-    total = CallEmployeeandSave(getEmployeeQuery);
-    skipAmount = skipAmount + 500;
+    total = await CallEmployeeandSave(getEmployeeQuery);
+    //skipAmount = skipAmount + 500;
+    skipAmount = 500;
 
-    for(let i = 500; i < total; i++){
+    for(let skip = skipAmount; skip < total; skip += 500){
         const getEmployeeQuery = 
         `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
-        CallEmployeeandSave(getEmployeeQuery);
-        skipAmount = skipAmount + 500;
+        await CallEmployeeandSave(getEmployeeQuery);
+       // skipAmount = skipAmount + 500;
     }
+
+    console.log('Employee SQl Data Size'+
+        SelectAllEMployees().length);
 }
 
-function CallRelationshipdataAndSave(getReporteeQuery) {
-    const ReporteeRelationship = GetApiData(getReporteeQuery)
+async function CallRelationshipdataAndSave(getReporteeQuery) {
+    let total;
+    const ReporteeRelationship = await GetApiData(getReporteeQuery)
     .then(ReporteeData => { 
 
         const relationshipsArray = ReporteeData.data.map(item => ({
@@ -130,22 +137,27 @@ function CallRelationshipdataAndSave(getReporteeQuery) {
 
         console.log('Reportee data:', relationshipsArray);
         insertBulkRelationships(relationshipsArray);
+        total = ReporteeData['totalCount'];
     })
+    return total;
 }
 
-function SaveAllEmployeesRelationships(skipAmount, total){
+async function SaveAllEmployeesRelationships(skipAmount, total){
     const getReporteeQuery = 
         `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;
 
-    total = CallRelationshipdataAndSave(getReporteeQuery);
-    skipAmount = skipAmount + 500;
+    total = await CallRelationshipdataAndSave(getReporteeQuery);
+    skipAmount = 500;
 
-    for(let i = 500; i < total; i++){
+    for(let skip = skipAmount; skip < total; skip += 500){
         const getReporteeQuery = 
-        `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;
-        CallEmployeeandSave(getEmployeeQuery);
-        skipAmount = skipAmount + 500;
+        `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skip}`;
+        await CallRelationshipdataAndSave(getReporteeQuery);
+        //skipAmount = skipAmount + 500;
     }
+
+    console.log('EmployeeRalationship SQl Data Size'+ 
+        SelectAllRelationships().length);
 }
 
 function RunApp(){
@@ -161,7 +173,7 @@ function RunApp(){
 
                 SaveAllEmployeesRelationships(0,0);
 
-                SortList();
+                //SortList();
 
             }else{
                 console.log('Server is not running or unavailable')
