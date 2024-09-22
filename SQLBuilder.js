@@ -61,8 +61,8 @@ function CreateEmployeeRelationshipsTable(){
 }
 
 export function InitDBandCreateTables(){
-    deleteAllEmployees();
-    deleteAllEmployeesRelationships();
+   // deleteAllEmployees();
+   // deleteAllEmployeesRelationships();
 
     CreateEmployeeTable();
     CreateEmployeeRelationshipsTable();

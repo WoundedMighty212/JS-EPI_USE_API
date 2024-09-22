@@ -62,7 +62,8 @@ export function insertBulkRelationships(employeesRelationships) {
 }
 
 
-export function SelectAllEMployees(){
+
+/*export function SelectAllEMployees(){
     db.all(`SELECT * FROM employees`, [], (err, rows) => {
         if (err) {
             console.error('Error querying data:', err.message);
@@ -70,9 +71,38 @@ export function SelectAllEMployees(){
             console.log('Employees:', rows);
         }
     });
+}*/
+
+export function SelectAllEMployees(){
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM employees`, [], (err, rows) => {
+            if (err) {
+                console.error('Error querying data:', err.message);
+                reject(err);
+            } else {
+                console.log('Employees:', rows);
+                resolve(rows);
+            }
+        });
+    });
 }
 
 export function SelectAllRelationships(){
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT * FROM employeesRelationships`, [], (err, rows) => {
+            if (err) {
+                console.error('Error querying data:', err.message);
+                reject(err);
+            } else {
+                console.log('Employees:', rows);
+                resolve(rows);
+            }
+        });
+    });
+}
+
+
+/*export function SelectAllRelationships(){
     db.all(`SELECT * FROM employeesRelationships`, [], (err, rows) => {
         if (err) {
             console.error('Error querying data:', err.message);
@@ -80,5 +110,5 @@ export function SelectAllRelationships(){
             console.log('Employees:', rows);
         }
     });
-}
+}*/
 

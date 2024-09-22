@@ -5,6 +5,7 @@ import {insertBulkEmployees} from './SqlLiteService.js'
 import {insertBulkRelationships} from './SqlLiteService.js'
 import {SelectAllEMployees} from './SqlLiteService.js'
 import {SelectAllRelationships} from './SqlLiteService.js'
+import {PostToServer} from './apiService.js'
 
 function FilterList(RelationshipArray, employeeArray, employee) {
     let MainFilteredArray = [];
@@ -56,9 +57,9 @@ function GetReportees(RelationshipArray, employee, employeeArray){
     return mainFilteredArray; //return list of managers
 }
 
-function SortList () {
-   const employeeArray = SelectAllEMployees();
-   const RelationshipArray = SelectAllRelationships();
+async function SortList () {
+   const employeeArray = await SelectAllEMployees();
+   const RelationshipArray = await SelectAllRelationships();
    let MainFilteredArray = [];
 
    for(let i = 0; i < employeeArray.length; i++){
@@ -84,7 +85,7 @@ function SortList () {
         }
    }
    //post to server: 
-   console.log(PostToServer('api/employee-sorter/test', MainFilteredArray));
+   console.log(await PostToServer('api/employee-sorter/test', MainFilteredArray));
 }
 
 function CallEmployeeandSave(getEmployeeQuery) {

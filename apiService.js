@@ -35,7 +35,7 @@ export async function GetApiData(querryString){
 }
 
 
-async function PostToServer(querryString, employeeDataArray) {
+export async function PostToServer(querryString, employeeDataArray) {
     try{
         const response = await axios.post(`${API_BASE_URL}${querryString}`, 
             employeeDataArray, 
