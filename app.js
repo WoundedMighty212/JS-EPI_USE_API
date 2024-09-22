@@ -1,3 +1,4 @@
+//call dependacies from other modules
 import {CheckServerAvailabilty} from './apiService.js'
 import {GetApiData} from './apiService.js'
 import {InitDBandCreateTables} from './SQLBuilder.js'
@@ -91,78 +92,86 @@ async function SortList () {
    console.log(await PostToServer('api/employee-sorter/test', MainFilteredArray));
 }
 
-async function CallEmployeeandSave(getEmployeeQuery) {
-    let total;
-    const employee = await GetApiData(getEmployeeQuery)
+//i will admit this code needs refactoring because the CallEmployeeandSave and CallRelationshipdataAndSave. could have been one function instead of two if you want to follow the don't repeat yourself rule! in a bigger app this is a bigger issue bacause it is always best to fix a problem in one place not several. especially if it is the same code
+//these functions also do not follow the don't repeat yourself rule: SaveAllEmployees and SaveAllEmployeesRelationships. never do this in a bigger app! --mike!
+
+//this function call data from api and saves it to local db
+async function CallEmployeeandSave(getEmployeeQuery) { //params is the api -end-point querry string you want to call
+    let total; //amount of server data for end-point
+    const employee = await GetApiData(getEmployeeQuery) //api-call to get data
     .then(response => {
 
-        const employeeArray = response.data.map(item => ({
-            name: item.name,         
-            employeeID: item.id, 
+        const employeeArray = response.data.map(item => ({ //build data object and store as array
+            name: item.name,      //name of employee   
+            employeeID: item.id, //employeeID to find out if the employee is manager or reportee  
         }));
 
-        console.log('employee data:', employeeArray);
-        insertBulkEmployees(employeeArray);
-        total = response['totalCount'];
+        console.log('employee data:', employeeArray); //log data pull progress
+        insertBulkEmployees(employeeArray); //save 500 records to local db
+        total = response['totalCount']; //get total count from json with bracket notation
     })
-    return total;
+    return total; //return total amount of record in api-end-point
 }
 
-async function SaveAllEmployees(skipAmount, total) {
-    const getEmployeeQuery = 
-    `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
+//this function calls the api many times and saves data to db until the api-end-point data is stored into local db. this function stores all data from this end-point
+async function SaveAllEmployees() { 
+    const getEmployeeQuery =  
+    `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`; //api end-point querry string
 
-    total = await CallEmployeeandSave(getEmployeeQuery);
-    skipAmount = 500;
+    let total = await CallEmployeeandSave(getEmployeeQuery); //call api and get first 500
+    let skipAmount = 500; // amount to skip, this is to specify how many api records to skip, if lets say you don't want to get the first 500 skip them or maybe the first 1500, but we want to get the next 500 since we already saved the first 500
 
-    for(let skip = skipAmount; skip < total; skip += 500){
+    for(let skip = skipAmount; skip < total; skip += 500){ //loop through whole end-point to pull and save data
         const getEmployeeQuery = 
-        `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;
-        await CallEmployeeandSave(getEmployeeQuery);
+        `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;//api end-point querry string assign new skip amount
+        await CallEmployeeandSave(getEmployeeQuery); // call api to get data until all data is pulled from server
     }
 
     console.log('Employee SQl Data Size'+
-        SelectAllEMployees().length);
+        SelectAllEMployees().length); //log local db size for testing purposes
 }
 
-async function CallRelationshipdataAndSave(getReporteeQuery) {
-    let total;
-    const ReporteeRelationship = await GetApiData(getReporteeQuery)
+//this function call data from api and saves it to local db
+async function CallRelationshipdataAndSave(getReporteeQuery) { //params is the api -end-point querry string you want to call
+    let total;//amount of server data for end-point
+    const ReporteeRelationship = await GetApiData(getReporteeQuery) //api-call to get data
     .then(ReporteeData => { 
 
-        const relationshipsArray = ReporteeData.data.map(item => ({
-            RecordID: item.id,         
-            managerID: item.managerId, 
-            reporteeID: item.reporteeId 
+        const relationshipsArray = ReporteeData.data.map(item => ({//build data object and store as array
+            RecordID: item.id,          //this is just the api -end-points sql record id
+            managerID: item.managerId,  //the manager for this record
+            reporteeID: item.reporteeId //the reportee for the manager
         }));
 
-        console.log('Reportee data:', relationshipsArray);
-        insertBulkRelationships(relationshipsArray);
-        total = ReporteeData['totalCount'];
+        console.log('Reportee data:', relationshipsArray); //log progress data save to db
+        insertBulkRelationships(relationshipsArray); //insert 500 records
+        total = ReporteeData['totalCount']; //get total count from json with bracket notation
     })
-    return total;
+    return total;//return total amount of record in api-end-point
 }
 
+//this function calls the api many times and saves data to db until the api-end-point data is stored into local db. this function stores all data from this end-point
 async function SaveAllEmployeesRelationships(skipAmount, total){
     const getReporteeQuery = 
         `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;
+        //api end-point querry string
 
-    total = await CallRelationshipdataAndSave(getReporteeQuery);
-    skipAmount = 500;
+    total = await CallRelationshipdataAndSave(getReporteeQuery);//call api and get first 500
+    skipAmount = 500;// amount to skip, this is to specify how many api records to skip, if lets say you don't want to get the first 500 skip them or maybe the first 1500, but we want to get the next 500 since we already saved the first 500
 
-    for(let skip = skipAmount; skip < total; skip += 500){
+    for(let skip = skipAmount; skip < total; skip += 500){ //loop through whole end-point to pull and save data
         const getReporteeQuery = 
         `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skip}`;
-        await CallRelationshipdataAndSave(getReporteeQuery);
+        await CallRelationshipdataAndSave(getReporteeQuery); // call api to get data until all data is pulled from server
     }
 
     console.log('EmployeeRalationship SQl Data Size'+ 
-        SelectAllRelationships().length);
+        SelectAllRelationships().length); //log local db size for testing purposes
 }
 
 function RunApp(){ //main entry point function for application 
     try{
-        InitDBandCreateTables();
+        InitDBandCreateTables(); //create new db or connect and then create tables if tables do not exist
 
         const serverStatus = CheckServerAvailabilty() //check if the server is available?
         .then(Status => {
