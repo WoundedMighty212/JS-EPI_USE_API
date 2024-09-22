@@ -185,9 +185,9 @@ async function RunApp() { //main entry point function for application c
         if (serverStatus['message'] === 'Service is running') { //if server is online get data, sort list and push to server
             console.log('Server is online');
            
-            await SaveAllEmployees(); //call api-get employees and save to database
-            await SaveAllEmployeesRelationships(); //call api-get employees Relationships and save to database
-            await SortList(); //sort the employees in correct format and push to server
+            await SaveAllEmployees().finally(); //call api-get employees and save to database
+            await SaveAllEmployeesRelationships().finally(); //call api-get employees Relationships and save to database
+            await SortList().finally(); //sort the employees in correct format and push to server
 
         } else {
             console.log('Server is not running or unavailable'); // server is down

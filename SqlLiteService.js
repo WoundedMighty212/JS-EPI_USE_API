@@ -33,36 +33,39 @@ export function insertIntoRelationships(name, employeeID){
 export function insertBulkEmployees(employees) {
     const stmt = db.prepare(`INSERT INTO employees (name, employeeID) VALUES (?, ?)`); //sql statement for insert
 
-    db.serialize(() => {
-        try {
+    try{
+        db.serialize(() => {
             employees.forEach(({ name, employeeID }) => { //save every employee in array
                 stmt.run(name, employeeID); //exute command for single record
                 console.log(`Inserted employee: ${name} with ID: ${employeeID}`); //log progress
             });
-        } catch (error) {
-            console.error('Error inserting into employees:', error);
-        } finally {
-            stmt.finalize(); //dispose object
-        }
-    });
+        });
+    }
+    catch(error){
+        console.error('Error inserting into employees:', error);
+    }
+    finally {
+        stmt.finalize(); //dispose object
+    }
 }
 
 //insert a array of employees Relationships data for sql lite db
 export function insertBulkRelationships(employeesRelationships) {
     const stmt = db.prepare(`INSERT INTO employeesRelationships (RecordID, managerID, reporteeID) VALUES (?, ?, ?)`);
 
+try{
     db.serialize(() => {
-        try {
-            employeesRelationships.forEach(({ RecordID, managerID, reporteeID }) => { //save every employee in array
-                stmt.run(RecordID, managerID, reporteeID);  //exute command for single record
-               console.log(`Inserted Relationships: ${RecordID} with ID: ${managerID} with sub-boardants: ${reporteeID}`); //log progress
-            });
-        } catch (error) {
-            console.error('Error inserting into employeesRelationships:', error);
-        } finally {
-            stmt.finalize(); //dispose object
+        for(let i = 0 ; i < employeesRelationships.length; i++){
+            stmt.run(employeesRelationships[i].RecordID, employeesRelationships[i].managerID, employeesRelationships[i].reporteeID);  //exute command for single record
+            console.log(`Inserted Relationships: ${employeesRelationships[i].RecordID} with ID: ${employeesRelationships[i].managerID} with sub-boardants: ${employeesRelationships[i].reporteeID}`); //log progress
         }
     });
+}catch(error){
+    console.error('Error inserting into employees Relationships:', error);
+}
+finally {
+        stmt.finalize(); //dispose object
+    }
 }
 
 //get all employee data asnync function
