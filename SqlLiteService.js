@@ -64,11 +64,7 @@ export function insertBulkRelationships(employeesRelationships) {
         }
     });
 }
-// Function to retrieve all employee data from the database.
-// This function is asynchronous and returns a Promise that resolves with the employee data or rejects with an error.
-// The function utilizes SQLite's `db.all` method to execute the SQL query.
-// Parameters: None
-// Returns: Promise that resolves to an array of employee objects or rejects with an error.
+
 //get all employee data asnync function
 export function SelectAllEMployees(){
     return new Promise((resolve, reject) => {
@@ -89,11 +85,6 @@ export function SelectAllEMployees(){
     });
 }
 
-// Function to retrieve all employee data from the database.
-// This function is asynchronous and returns a Promise that resolves with the employee data or rejects with an error.
-// The function utilizes SQLite's `db.all` method to execute the SQL query.
-// Parameters: None
-// Returns: Promise that resolves to an array of employee objects or rejects with an error.
 //get all employees Relationships data asnync function
 export function SelectAllRelationships(){
      // Execute SQL query to select all employees Relationships from the 'employees' table
