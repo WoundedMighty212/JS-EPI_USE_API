@@ -115,20 +115,24 @@ async function CallEmployeeandSave(getEmployeeQuery) { //params is the api -end-
 
 //this function calls the api many times and saves data to db until the api-end-point data is stored into local db. this function stores all data from this end-point
 async function SaveAllEmployees() { 
+    let skipAmount = 0; // the first 500 should have no skip amount
     const getEmployeeQuery =  
     `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`; //api end-point querry string
 
     let total = await CallEmployeeandSave(getEmployeeQuery); //call api and get first 500
-    let skipAmount = 500; // amount to skip, this is to specify how many api records to skip, if lets say you don't want to get the first 500 skip them or maybe the first 1500, but we want to get the next 500 since we already saved the first 500
+    skipAmount = 500; // amount to skip, this is to specify how many api records to skip, if lets say you don't want to get the first 500 skip them or maybe the first 1500, but we want to get the next 500 since we already saved the first 500
+    let totalLeft = total - skipAmount; //let's get the total left
 
-    for(let skip = skipAmount; skip < total; skip += 500){ //loop through whole end-point to pull and save data
+    while(totalLeft > 0) { //go through the loop until all records are retrieved
         const getEmployeeQuery = 
         `api/employee-sorter/get-employees?limit=500&skip=${skipAmount}`;//api end-point querry string assign new skip amount
         await CallEmployeeandSave(getEmployeeQuery); // call api to get data until all data is pulled from server
+        totalLeft < 500 ? skipAmount += totalLeft : skipAmount += 500 //check if the amount left is greater then 500 then limit still equals 500 else add the new limit which is less then 500 to the skipamount
+        totalLeft = total - skipAmount; //recalculate totalLeft
     }
 
-    console.log('Employee SQl Data Size'+
-        SelectAllEMployees().length); //log local db size for testing purposes
+   // console.log('Employee SQl Data Size'+
+       // SelectAllEMployees().length); //log local db size for testing purposes
 }
 
 //this function call data from api and saves it to local db
@@ -151,46 +155,45 @@ async function CallRelationshipdataAndSave(getReporteeQuery) { //params is the a
 }
 
 //this function calls the api many times and saves data to db until the api-end-point data is stored into local db. this function stores all data from this end-point
-async function SaveAllEmployeesRelationships(skipAmount, total){
+async function SaveAllEmployeesRelationships(){
+    let skipAmount = 0; // the first 500 should have no skip amount
     const getReporteeQuery = 
-        `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;
+        `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;//api end-point querry string assign new skip amount
         //api end-point querry string
 
-    total = await CallRelationshipdataAndSave(getReporteeQuery);//call api and get first 500
+    let total = await CallRelationshipdataAndSave(getReporteeQuery);//call api and get first 500
     skipAmount = 500;// amount to skip, this is to specify how many api records to skip, if lets say you don't want to get the first 500 skip them or maybe the first 1500, but we want to get the next 500 since we already saved the first 500
+    let totalLeft = total - skipAmount; //recalculate totalLeft
 
-    for(let skip = skipAmount; skip < total; skip += 500){ //loop through whole end-point to pull and save data
+    while(totalLeft > 0) { //go through the loop until all records are retrieved
         const getReporteeQuery = 
-        `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skip}`;
+        `api/employee-sorter/get-reporting-relationship?limit=500&skip=${skipAmount}`;//api end-point querry string assign new skip amount
         await CallRelationshipdataAndSave(getReporteeQuery); // call api to get data until all data is pulled from server
+        totalLeft < 500 ? skipAmount += totalLeft : skipAmount += 500 //check if the amount left is greater then 500 then limit still equals 500 else add the new limit which is less then 500 to the skipamount
+        totalLeft = total - skipAmount; //recalculate totalLeft
     }
 
-    console.log('EmployeeRalationship SQl Data Size'+ 
-        SelectAllRelationships().length); //log local db size for testing purposes
+    //console.log('EmployeeRalationship SQl Data Size'+ 
+       // SelectAllRelationships().length); //log local db size for testing purposes
 }
 
-function RunApp(){ //main entry point function for application 
-    try{
+async function RunApp() { //main entry point function for application c
+    try {
         InitDBandCreateTables(); //create new db or connect and then create tables if tables do not exist
 
-        const serverStatus = CheckServerAvailabilty() //check if the server is available?
-        .then(Status => {
-            if(Status['message'] === 'Service is running'){ //if server is online get data, sort list and push to server
-                console.log('Server is online')
+        const serverStatus = await CheckServerAvailabilty(); //check if the server is available?
+        if (serverStatus['message'] === 'Service is running') { //if server is online get data, sort list and push to server
+            console.log('Server is online');
            
-            SaveAllEmployees(0,0); //call api-get employees and save to database
+            await SaveAllEmployees(); //call api-get employees and save to database
+            await SaveAllEmployeesRelationships(); //call api-get employees Relationships and save to database
+            await SortList(); //sort the employees in correct format and push to server
 
-            SaveAllEmployeesRelationships(0,0); //call api-get employees Relationships and save to database
-
-            SortList(); //sort the employees in correct format and push to server
-        
-            }else{
-                console.log('Server is not running or unavailable')//server is donw
-            }
-        });  
-    }
-    catch(error){
-        console.error('App-Run Error', error); //catch any runtime errors
+        } else {
+            console.log('Server is not running or unavailable'); // server is down
+        }
+    } catch (error) {
+        console.error('App-Run Error', error); // catch any runtime errors
     }
 }
 
